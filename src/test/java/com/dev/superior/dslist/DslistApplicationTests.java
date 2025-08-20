@@ -1,4 +1,4 @@
-package com.dev.superiro.dslist;
+package com.dev.superior.dslist;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
