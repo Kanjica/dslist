@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.dev.superior.dslist.dto.GameDTO;
 import com.dev.superior.dslist.dto.GameMinDTO;
 import com.dev.superior.dslist.entities.Game;
 import com.dev.superior.dslist.repository.GameRepository;
+import com.dev.superior.dslist.exception.ResourceNotFoundException;
 
 @Service
 public class GameService {
@@ -17,9 +20,16 @@ public class GameService {
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
-
+    
+    @Transactional(readOnly = true)
     public List<GameMinDTO> findAll() {
         List<Game> games = gameRepository.findAll();
         return games.stream().map(GameMinDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public GameDTO findById(Long id) {
+        Game game = gameRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Game not found"));
+        return new GameDTO(game);
     }
 }
