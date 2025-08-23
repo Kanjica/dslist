@@ -1,4 +1,4 @@
-# Usa uma imagem com Java 17 para o build, que é mais compatível com o Maven
+# Usa uma imagem com Java 17 para o build
 FROM maven:3.9.5-amazoncorretto-17 as builder
 
 # Define o diretório de trabalho dentro do container
