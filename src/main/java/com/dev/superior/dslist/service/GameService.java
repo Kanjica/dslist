@@ -11,6 +11,7 @@ import com.dev.superior.dslist.dto.GameMinDTO;
 import com.dev.superior.dslist.entities.Game;
 import com.dev.superior.dslist.repository.GameRepository;
 import com.dev.superior.dslist.exception.ResourceNotFoundException;
+import com.dev.superior.dslist.projections.GameMinProjection;
 
 @Service
 public class GameService {
@@ -31,5 +32,11 @@ public class GameService {
     public GameDTO findById(Long id) {
         Game game = gameRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Game not found"));
         return new GameDTO(game);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GameMinDTO> findByList(Long listId) {
+        List<GameMinProjection> result = gameRepository.searchByList(listId);
+        return result.stream().map(GameMinDTO::new).collect(Collectors.toList());
     }
 }
