@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails{
     
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String login;
@@ -35,6 +35,12 @@ public class User implements UserDetails{
     private String password;
 
     private UserRole role;
+
+    public User(String login, String password, UserRole role){
+        this.login = login;
+        this.password = password;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -44,7 +50,7 @@ public class User implements UserDetails{
 
     @Override
     public String getPassword() {
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+        return password;
     }
 
     @Override
