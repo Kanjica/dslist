@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dev.superior.dslist.dto.AuthenticationDTO;
+import com.dev.superior.dslist.dto.LoginResponseDTO;
 import com.dev.superior.dslist.dto.RegisterDTO;
 import com.dev.superior.dslist.repository.UserRepository;
+import com.dev.superior.dslist.service.TokenService;
 import com.dev.superior.dslist.users.User;
 
 import jakarta.validation.Valid;
@@ -24,16 +26,20 @@ public class AuthenticationController {
 
     UserRepository repository;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository repository){
+    TokenService tokenService;
+    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository repository, TokenService tokenService){
         this.authenticationManager = authenticationManager;
         this.repository = repository;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login() , data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
